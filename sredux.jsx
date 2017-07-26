@@ -149,10 +149,22 @@ const todos = (state = [], action) => {
           completed: false
         }
       ];
+
+    case 'TOGGLE_TODO':
+      return state.map(todo => {
+        if (todo.id !== action.id) {
+          return todo;
+        } else {
+          return {
+            ...todo,
+            completed: !todo.completed
+          };
+        }
+      });
     default:
       return state;
   }
-}
+};
 
 const toggleTodo = (todo) => {
   // return Object.assign({}, todo, {
@@ -167,22 +179,43 @@ const toggleTodo = (todo) => {
 
 
 const testToggleTodo = () => {
-  const todoBefore = {
-    id: 0,
-    text: 'Learn Redux',
-    completed: false
-  };
-  const todoAfter = {
-    id: 0,
-    text: 'Learn Redux',
-    completed: true
+  const stateBefore = [
+    {
+      id: 0,
+      text: 'Learn Redux',
+      completed: false
+    },
+    {
+      id: 1,
+      text: 'Go Shopping',
+      completed: false
+    }
+  ];
+
+  const action = {
+    type: 'TOGGLE_TODO',
+    id: 1
   };
 
-  deepFreeze(todoBefore);
+  const stateAfter = [
+    {
+      id: 0,
+      text: 'Learn Redux',
+      completed: false
+    },
+    {
+      id: 1,
+      text: 'Go Shopping',
+      completed: true
+    }
+  ];
+
+  deepFreeze(stateBefore);
+  deepFreeze(action);
 
   expect(
-    toggleTodo(todoBefore)
-  ).toEqual(todoAfter);
+    todos(stateBefore, action)
+  ).toEqual(stateAfter);
 };
 
 
@@ -207,6 +240,7 @@ const testAddTodo = () => {
   ).toEqual(stateAfter);
 };
 
-testToggleTodo();
+
 testAddTodo();
+testToggleTodo();
 
